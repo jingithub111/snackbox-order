@@ -19,7 +19,8 @@
 |---------|-----------|
 | เมนูใหม่ (Grouped Cards) | จัดกลุ่ม 175 SKU → ~20 กลุ่มต่อ tier เลือกรสด้วย chip |
 | รูปสินค้า | Emoji + gradient placeholder — เพิ่มรูปจริงทีหลัง |
-| Mobile-first UI | ออกแบบเพื่อมือถือเป็นหลัก |
+| Mobile-first UI | ออกแบบเพื่อมือถือเป็นหลัก, font ≥16px, tap target ≥44px |
+| แก้รูป Hero จาก Admin | Admin อัปโหลด Logo (profile icon) + Cover image ได้จากหลังบ้าน |
 | บันทึกออเดอร์ | Google Sheets (append row ทุกออเดอร์) |
 | แจ้งเตือน Admin | Telegram Bot — ส่งทันทีเมื่อมีออเดอร์ใหม่ |
 | เก็บสลิปโอนเงิน | Google Drive (folder แยกตามวัน) |
@@ -282,7 +283,24 @@ Admin panel เปิดที่ `http://localhost:3001/admin`
 
 ---
 
-## 13. Out of Scope (Phase 2+)
+## 13. Admin — Hero Image Management
+
+Admin สามารถแก้รูปในส่วน Hero ของหน้าสั่งซื้อได้จาก Admin Panel:
+
+| รูป | ขนาดแนะนำ | เก็บที่ | Default |
+|-----|-----------|---------|---------|
+| Logo (profile icon) | 200×200px, PNG | Google Drive → serve via `/api/assets/logo` | emoji 🧁 |
+| Cover / Banner | 1200×400px, JPG | Google Drive → serve via `/api/assets/cover` | gradient CSS |
+
+**Flow:**
+1. Admin เปิดหน้า Settings ใน Admin Panel
+2. กด "เปลี่ยน Logo" หรือ "เปลี่ยนรูป Cover"
+3. เลือกไฟล์ → อัปโหลด → บันทึกใน Google Drive (แทนที่ไฟล์เดิม)
+4. Frontend โหลดรูปจาก `/api/assets/logo` และ `/api/assets/cover` ทุกครั้งที่เปิดหน้า
+
+---
+
+## 15. Out of Scope (Phase 2+)
 
 - Analytics / Sales dashboard
 - CMS — แก้เมนูจาก admin panel

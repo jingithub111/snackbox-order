@@ -102,6 +102,12 @@ function getItemById(id) {
   return ALL_ITEMS.find(m => m.id === id);
 }
 
+const ROLL_FLAVORS = ['คละรส (ไม่ระบุ)', 'ใบเตย', 'ส้ม', 'กาแฟ', 'วนิลา'];
+
+function hasRollCream(item) {
+  return item.name.includes('โรลครีม');
+}
+
 function getCartTotal() {
   return Object.entries(state.cart).reduce((s, [id, v]) => {
     const item = getItemById(id);
@@ -112,7 +118,7 @@ function getCartTotal() {
 function getCartItems() {
   return Object.entries(state.cart).map(([id, v]) => {
     const item = getItemById(id);
-    return { ...item, qty: v.qty, juice: v.juice };
+    return { ...item, qty: v.qty, juice: v.juice, rollFlavor: v.rollFlavor || null };
   });
 }
 
@@ -180,17 +186,32 @@ function renderMenu(tier) {
             <span class="juice-text">${juiceOn ? 'รับน้ำส้ม' : 'ไม่รับน้ำส้ม'}</span>
             <span class="juice-status">${juiceOn ? '✓' : '✗'}</span>
           </div>
+          ${hasRollCream(item) ? `
+          <div class="roll-flavor-row">
+            <div class="option-label">🥐 รสโรลครีม (ไม่บังคับ)</div>
+            <select class="roll-flavor-select" onchange="setRollFlavor('${item.id}', this.value)">
+              ${ROLL_FLAVORS.map(f => `<option value="${f}" ${(cartItem.rollFlavor || 'คละรส (ไม่ระบุ)') === f ? 'selected' : ''}>${f}</option>`).join('')}
+            </select>
+          </div>` : ''}
         </div>` : ''}
       </div>`;
   }).join('');
 }
 
 function changeQty(id, delta) {
-  if (!state.cart[id]) state.cart[id] = { qty: 0, juice: true };
+  if (!state.cart[id]) {
+    const item = getItemById(id);
+    state.cart[id] = { qty: 0, juice: true, rollFlavor: hasRollCream(item) ? 'คละรส (ไม่ระบุ)' : null };
+  }
   state.cart[id].qty = Math.max(0, state.cart[id].qty + delta);
   if (state.cart[id].qty === 0) delete state.cart[id];
   renderMenu(state.currentTier);
   updateCartBar();
+}
+
+function setRollFlavor(id, flavor) {
+  if (!state.cart[id]) return;
+  state.cart[id].rollFlavor = flavor;
 }
 
 // FIX: ใช้ div onclick แทน label+checkbox ป้องกัน double-fire
@@ -335,6 +356,7 @@ function renderOrderSummary() {
         <div class="summary-item-tags">
           ${it.juice ? '🍊 น้ำส้ม' : '🚫 ไม่รับน้ำส้ม'} &nbsp;
           📦 กล่องเบรค &nbsp;× ${it.qty}
+          ${it.rollFlavor && it.rollFlavor !== 'คละรส (ไม่ระบุ)' ? `&nbsp; 🥐 รส${escapeHtml(it.rollFlavor)}` : ''}
         </div>
       </div>
       <div class="summary-item-price">฿${(it.price * it.qty).toLocaleString()}</div>
@@ -476,9 +498,10 @@ function openQuoteModal() {
   if (items.length === 0) return;
 
   // Build text summary
-  const lines = items.map(it =>
-    `• ${it.name} × ${it.qty} = ฿${(it.price * it.qty).toLocaleString()} ${it.juice ? '(น้ำส้ม)' : '(ไม่รับน้ำส้ม)'}`
-  );
+  const lines = items.map(it => {
+    const flavorNote = it.rollFlavor && it.rollFlavor !== 'คละรส (ไม่ระบุ)' ? ` รสโรลครีม: ${it.rollFlavor}` : '';
+    return `• ${it.name} × ${it.qty} = ฿${(it.price * it.qty).toLocaleString()} ${it.juice ? '(น้ำส้ม)' : '(ไม่รับน้ำส้ม)'}${flavorNote}`;
+  });
   lines.push(`\nยอดรวม: ฿${total.toLocaleString()}`);
 
   const dateVal = document.getElementById('pickupDate').value;

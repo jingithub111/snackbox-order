@@ -283,6 +283,19 @@ body {
 .juice-on .juice-status { color: var(--gold); }
 .juice-off .juice-status { color: var(--gray); }
 
+/* Roll flavor selector */
+.roll-flavor-row { margin-top: 10px; }
+.roll-flavor-select {
+  width: 100%; padding: 8px 10px;
+  border: 1.5px solid var(--cream-dk); border-radius: 8px;
+  background: var(--cream); color: var(--brown);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer; appearance: auto;
+}
+.roll-flavor-select:focus {
+  outline: none; border-color: var(--gold);
+}
+
 /* =====================
    CART BAR
    ===================== */

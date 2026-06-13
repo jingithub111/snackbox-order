@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สั่งชุดเบรค — นวล เบเกอรี่ 1988</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-vector"></div>
+  <div class="header-inner">
+    <div class="brand">
+      <img src="assets/logo.png" alt="นวล เบเกอรี่ 1988" class="brand-logo" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-name">นวล เบเกอรี่ 1988</div>
+        <div class="brand-sub">สั่งชุดเบรค / Snack Box</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- QUOTE BANNER (shown when loading from a saved quote link) -->
+<div id="quoteBanner" class="quote-banner" style="display:none">
+  <span>📋 มี Quote ที่บันทึกไว้</span>
+  <button class="btn-load-quote" onclick="loadQuoteFromHash()">โหลด Quote นี้</button>
+  <button class="btn-dismiss-quote" onclick="dismissQuoteBanner()">✕</button>
+</div>
+
+<!-- PROGRESS BAR (steps 2-5) -->
+<div class="progress-wrap" id="progressWrap" style="display:none">
+  <div class="progress-inner">
+    <div class="progress-step" id="ps1">
+      <div class="ps-dot active">1</div>
+      <div class="ps-label">เมนู</div>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" id="ps2">
+      <div class="ps-dot">2</div>
+      <div class="ps-label">การรับ</div>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" id="ps3">
+      <div class="ps-dot">3</div>
+      <div class="ps-label">ข้อมูล</div>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" id="ps4">
+      <div class="ps-dot">4</div>
+      <div class="ps-label">ชำระเงิน</div>
+    </div>
+    <div class="progress-line"></div>
+    <div class="progress-step" id="ps5">
+      <div class="ps-dot">5</div>
+      <div class="ps-label">ยืนยัน</div>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- ======= STEP 1: เลือกเมนู ======= -->
+  <section id="step1" class="step active">
+    <div class="step-header">
+      <h2>เลือกชุดเบรค</h2>
+      <p class="step-desc">เลือกเมนูและจำนวนที่ต้องการ สามารถเลือกหลายรายการได้</p>
+      <div class="trust-badge"><span>✓</span> ไม่ใส่วัตถุกันเสีย — ผลิตสดทุกวัน</div>
+    </div>
+
+    <div class="min-order-notice">
+      <span>ℹ️</span>
+      <span>ไม่มีขั้นต่ำต่อเมนู — <strong>ฟรีจัดส่งเมื่อสั่งครบ ฿4,000</strong> ขึ้นไป</span>
+    </div>
+
+    <!-- Tier Tabs -->
+    <div class="tier-tabs">
+      <button class="tier-tab active" data-tier="30" onclick="switchTier(30)">30฿</button>
+      <button class="tier-tab" data-tier="35" onclick="switchTier(35)">35฿</button>
+      <button class="tier-tab" data-tier="40" onclick="switchTier(40)">40฿</button>
+      <button class="tier-tab" data-tier="50" onclick="switchTier(50)">50฿</button>
+    </div>
+
+    <!-- Menu Grid -->
+    <div id="menuGrid" class="menu-grid"></div>
+
+    <!-- Cart Bar -->
+    <div class="cart-bar" id="cartBar" style="display:none">
+      <div class="cart-info">
+        <span class="cart-count" id="cartCount">0 รายการ</span>
+        <span class="cart-total" id="cartTotal">฿0</span>
+      </div>
+      <div class="cart-actions">
+        <button class="btn btn-quote" onclick="openQuoteModal()" title="บันทึก Quote">💾 Quote</button>
+        <button class="btn btn-primary" onclick="goToStep(2)">ถัดไป →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= STEP 2: ข้อมูลการรับสินค้า ======= -->
+  <section id="step2" class="step">
+    <div class="step-header">
+      <button class="btn-back" onclick="goToStep(1)">← กลับ</button>
+      <h2>ข้อมูลการรับสินค้า</h2>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label required">วันที่รับสินค้า</label>
+      <input type="date" id="pickupDate" class="form-input" onchange="validateStep2()">
+      <div class="form-hint">กรุณาสั่งล่วงหน้าอย่างน้อย 3 วัน</div>
+      <div class="date-dayname" id="dateDayName" style="display:none"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label required">วิธีรับสินค้า</label>
+      <div class="radio-group">
+        <label class="radio-card" id="radioBranch">
+          <input type="radio" name="deliveryMethod" value="branch" checked onchange="toggleDelivery()">
+          <div class="radio-card-body">
+            <div class="radio-card-title">🏪 รับที่สาขา</div>
+            <div class="radio-card-desc">เลือกสาขาที่สะดวก</div>
+          </div>
+        </label>
+        <label class="radio-card" id="radioDelivery">
+          <input type="radio" name="deliveryMethod" value="delivery" onchange="toggleDelivery()" id="deliveryRadio">
+          <div class="radio-card-body">
+            <div class="radio-card-title">🚚 จัดส่ง</div>
+            <div class="radio-card-desc" id="deliveryDesc">ฟรี! เมื่อสั่งครบ ฿4,000 ขึ้นไป</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group" id="branchGroup">
+      <label class="form-label required">เลือกสาขา</label>
+      <select id="branchSelect" class="form-input" onchange="validateStep2()">
+        <option value="">— เลือกสาขา —</option>
+        <optgroup label="เชียงใหม่">
+          <option>รวมโชค</option>
+          <option>Big C Extra</option>
+          <option>Big C ดอนจั่น</option>
+          <option>Big C หางดง</option>
+          <option>89 พลาซ่า</option>
+          <option>อบจ. เชียงใหม่</option>
+          <option>เซ็นทรัล เชียงใหม่</option>
+          <option>เซ็นทรัล เชียงใหม่ แอร์พอร์ต</option>
+          <option>โรงพยาบาลนครพิงค์</option>
+          <option>โรงพยาบาลมหาราช (สวนดอก)</option>
+        </optgroup>
+        <optgroup label="ลำพูน">
+          <option>Big C ลำพูน</option>
+        </optgroup>
+        <optgroup label="ลำปาง">
+          <option>โรงพยาบาลลำปาง</option>
+        </optgroup>
+        <optgroup label="เชียงราย">
+          <option>โรงพยาบาลเชียงรายประชานุเคราะห์</option>
+        </optgroup>
+        <optgroup label="กรุงเทพฯ">
+          <option>วังหลัง</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="form-group" id="deliveryGroup" style="display:none">
+      <label class="form-label required">ที่อยู่จัดส่ง</label>
+      <textarea id="deliveryAddress" class="form-input" rows="3" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์" onInput="validateStep2()"></textarea>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="step2Next" onclick="goToStep(3)" disabled>ถัดไป →</button>
+  </section>
+
+  <!-- ======= STEP 3: ข้อมูลลูกค้า ======= -->
+  <section id="step3" class="step">
+    <div class="step-header">
+      <button class="btn-back" onclick="goToStep(2)">← กลับ</button>
+      <h2>ข้อมูลผู้สั่ง</h2>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label required">ชื่อ-นามสกุล</label>
+      <input type="text" id="custName" class="form-input" placeholder="ชื่อ นามสกุล" autocomplete="name" onInput="validateStep3()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">หน่วยงาน / บริษัท <span class="optional">(แนะนำให้ระบุ)</span></label>
+      <input type="text" id="custOrg" class="form-input" placeholder="ชื่อบริษัทหรือหน่วยงาน" autocomplete="organization">
+    </div>
+    <div class="form-group">
+      <label class="form-label required">เบอร์โทรศัพท์</label>
+      <input type="tel" id="custPhone" class="form-input" placeholder="0812345678" maxlength="10" inputmode="numeric" autocomplete="tel" onInput="validateStep3()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">อีเมล <span class="optional">(ไม่บังคับ)</span></label>
+      <input type="email" id="custEmail" class="form-input" placeholder="example@email.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label class="toggle-row">
+        <input type="checkbox" id="taxInvoiceCheck" onchange="toggleTaxInvoice()">
+        <span class="toggle-label">ต้องการใบกำกับภาษี</span>
+      </label>
+    </div>
+
+    <div id="taxInvoiceForm" style="display:none" class="sub-form">
+      <div class="sub-form-title">📄 ข้อมูลใบกำกับภาษี</div>
+      <div class="form-group">
+        <label class="form-label required">ชื่อบริษัท / นิติบุคคล</label>
+        <input type="text" id="taxCompany" class="form-input" placeholder="บริษัท ... จำกัด" onInput="validateStep3()">
+      </div>
+      <div class="form-group">
+        <label class="form-label required">เลขประจำตัวผู้เสียภาษี (13 หลัก)</label>
+        <input type="text" id="taxId" class="form-input" placeholder="0000000000000" maxlength="13" inputmode="numeric" onInput="validateStep3()">
+      </div>
+      <div class="form-group">
+        <label class="form-label required">ที่อยู่สำหรับออกใบกำกับ</label>
+        <textarea id="taxAddress" class="form-input" rows="2" placeholder="ที่อยู่บริษัท..." onInput="validateStep3()"></textarea>
+      </div>
+    </div>
+
+    <input type="text" id="website" name="website" style="display:none" tabindex="-1" autocomplete="off">
+
+    <button class="btn btn-primary btn-full" id="step3Next" onclick="goToStep(4)" disabled>ถัดไป →</button>
+  </section>
+
+  <!-- ======= STEP 4: ชำระเงิน ======= -->
+  <section id="step4" class="step">
+    <div class="step-header">
+      <button class="btn-back" onclick="goToStep(3)">← กลับ</button>
+      <h2>ชำระเงิน</h2>
+    </div>
+
+    <div class="summary-box">
+      <div class="summary-title">สรุปรายการ</div>
+      <div id="orderSummaryList"></div>
+      <div class="summary-divider"></div>
+      <div class="summary-total-row">
+        <span>ยอดรวมทั้งหมด</span>
+        <span class="summary-total-amount" id="summaryTotal">฿0</span>
+      </div>
+    </div>
+
+    <!-- Payment Box -->
+    <div class="qr-box">
+      <div class="qr-title">ชำระเงิน</div>
+      <div class="qr-amount" id="qrAmount">฿0</div>
+
+      <div class="payment-methods">
+        <!-- QR side -->
+        <div class="payment-qr-side">
+          <div class="payment-method-label">สแกน QR PromptPay</div>
+          <img src="assets/qr-payment.jpg" alt="QR PromptPay นวล เบเกอรี่ 1988" class="qr-img">
+        </div>
+        <!-- Divider -->
+        <div class="payment-or">หรือ</div>
+        <!-- Bank side -->
+        <div class="payment-bank-side">
+          <div class="payment-method-label">โอนผ่านธนาคาร</div>
+          <div class="bank-info">
+            <div class="bank-logo">🌿</div>
+            <div>
+              <div class="bank-name">ธนาคารกสิกรไทย</div>
+              <div class="bank-account">036-841-5081</div>
+              <div class="bank-owner">บจก. นวล เบเกอรี่ 1988</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="qr-note">กรุณาโอนยอดตามที่แสดงด้านบนและแนบสลิปด้านล่าง</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label required">แนบสลิปการโอนเงิน</label>
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('slipFile').click()">
+        <div class="upload-icon">📎</div>
+        <div class="upload-text">แตะเพื่อเลือกไฟล์</div>
+        <div class="upload-hint">JPG, PNG หรือ PDF — ขนาดไม่เกิน 5MB</div>
+        <input type="file" id="slipFile" accept="image/jpeg,image/png,application/pdf" style="display:none" onchange="handleSlipUpload(event)">
+      </div>
+      <div id="slipPreview" style="display:none" class="slip-preview">
+        <div class="slip-info">
+          <span class="slip-icon">✅</span>
+          <span id="slipFileName"></span>
+          <button class="slip-remove" onclick="removeSlip()">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="step4Submit" onclick="submitOrder()" disabled>
+      ยืนยันการสั่งซื้อ
+    </button>
+    <div id="submitCountdown" style="display:none" class="countdown-msg"></div>
+  </section>
+
+  <!-- ======= STEP 5: ยืนยัน ======= -->
+  <section id="step5" class="step">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <h2 class="success-title">สั่งซื้อสำเร็จ!</h2>
+      <div class="order-number-label">หมายเลขออเดอร์</div>
+      <div class="order-number" id="orderNumber">NB-20260613-001</div>
+      <p class="success-note">ทีมงานจะติดต่อยืนยันออเดอร์ภายใน 24 ชั่วโมง<br>LINE OA: <strong>@nuanbakery</strong></p>
+    </div>
+    <div class="summary-box">
+      <div class="summary-title">สรุปออเดอร์</div>
+      <div id="confirmSummary"></div>
+    </div>
+    <button class="btn btn-outline btn-full" onclick="resetOrder()">🔄 สั่งซื้อใหม่</button>
+  </section>
+
+</main>
+
+<!-- ======= QUOTE MODAL ======= -->
+<div id="quoteModal" class="modal-overlay" style="display:none" onclick="closeQuoteModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">💾 บันทึก Quote</div>
+      <button class="modal-close" onclick="closeQuoteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">แชร์ลิงก์นี้ให้ผู้อนุมัติ — เมื่อกดลิงก์จะโหลด Quote ของคุณกลับมาพร้อมชำระเงินได้เลย</p>
+
+      <div class="quote-summary" id="quoteSummaryText"></div>
+
+      <div class="quote-actions">
+        <button class="btn btn-primary btn-full" onclick="copyQuoteLink()">
+          <span id="copyLinkIcon">🔗</span> คัดลอกลิงก์ Quote
+        </button>
+        <button class="btn btn-outline btn-full" onclick="copyQuoteText()">
+          <span id="copyTextIcon">📋</span> คัดลอกข้อความ (สำหรับ LINE)
+        </button>
+      </div>
+
+      <div id="quoteCopyConfirm" class="copy-confirm" style="display:none">✅ คัดลอกแล้ว!</div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

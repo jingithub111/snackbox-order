@@ -4,7 +4,7 @@
 // BACKEND — Google Apps Script Web App
 // Deploy Code.gs → copy Web App URL here
 // =====================
-const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwOsT2WXazDAPb0X-cqXHRM1JLtG4J_cris6NhsCAeL6KnqSETMw9BB7FkL5fk7lEKt/exec';
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzlwnzZ0NfbCkOWKp3Lq8_Xl_iVT7EuGC_WBONO2FCcZ1HG82Tfh_22qqw2gMxVgBnF/exec';
 
 // reCAPTCHA v3 site key — public, safe to expose in source code
 // Secret key lives only in Code.gs (server-side)

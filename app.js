@@ -469,6 +469,71 @@ const MENU_GROUPS = {
 };
 
 // =====================
+// PRODUCT IMAGE MAP
+// groupId → filename in assets/products/
+// =====================
+const GROUP_IMAGES = {
+  // 30฿
+  'g30-roll-butter':    'โรลครีมใบเตย.png',
+  'g30-roll-breadcake': 'โรลครีมใบเตย.png',
+  'g30-roll-brownie':   'โรลครีมใบเตย.png',
+  'g30-eclair-butter':  'เอแคลร์.png',
+  'g30-eclair-breadcake': 'เอแคลร์.png',
+  'g30-eclair-brownie': 'เอแคลร์.png',
+  'g30-banana-cake':    'เค้กกล้วยหอม.png',
+  'g30-cup-cake':       'เค้กถ้วยใบเตย.png',
+  'g30-round-bread':    'ปังไส้กรอก.png',
+  'g30-roll-cupcake':   'โรลครีมใบเตย.png',
+  'g30-roll-banana':    'โรลครีมใบเตย.png',
+  'g30-roll-foytong':   'ปังไส้ฝอยทอง.png',
+  'g30-roll-taro':      'ปังไส้เผือก.png',
+  'g30-roll-raisin':    'ปังไส้ลูกเกด.png',
+  'g30-roll-sausage':   'ปังไส้กรอก.png',
+  // 35฿
+  'g35-roll2-butter':    'โรลครีมใบเตย.png',
+  'g35-roll2-breadcake': 'โรลครีมใบเตย.png',
+  'g35-roll2-brownie':   'โรลครีมใบเตย.png',
+  'g35-brownie-breadcake': 'บราวนี่เม็ดมะม่วงมินิ.png',
+  'g35-butter-breadcake':  'บัตเตอร์เค้ก.png',
+  'g35-roll-banana':     'โรลครีมใบเตย.png',
+  'g35-roll-foytong':    'โรลใบเตยฝอยทอง.png',
+  'g35-roll-taro':       'โรลครีมใบเตย.png',
+  'g35-roll-raisin':     'โรลครีมใบเตย.png',
+  'g35-roll-sausage':    'โรลครีมใบเตย.png',
+  // 40฿
+  'g40-hamcheese-sausage': 'ขนมปังไส้กรอกแฮมชีส.png',
+  'g40-cheese-sausage':    'ขนมปังไส้กรอกแฮมชีส.png',
+  'g40-pork-chili':        'ขนมปังหมูหยองพริกเผา.png',
+  'g40-toffee-butter':     'ทอฟฟี่เค้ก.png',
+  'g40-toffee-breadcake':  'ทอฟฟี่เค้ก.png',
+  'g40-butter-breadcake':  'บัตเตอร์เค้ก.png',
+  'g40-toffee':            'ทอฟฟี่เค้ก.png',
+  'g40-bean-bread':        'ขนมปังถั่ว 5 รส.png',
+  'g40-roll-foytong':      'ปังไส้ฝอยทอง.png',
+  'g40-roll-taro':         'ปังไส้เผือก.png',
+  'g40-roll-raisin':       'ปังไส้ลูกเกด.png',
+  'g40-roll-sausage':      'ปังไส้กรอก.png',
+  // 50฿
+  'g50-bread-butter-brownie': 'ปังไส้เค้กนม.png',
+  'g50-bread-banana-roll':    'ปังไส้เค้กนม.png',
+  'g50-bread-cup-roll':       'ปังไส้เค้กนม.png',
+  'g50-bread-eclair-roll':    'ปังไส้เค้กนม.png',
+  'g50-cupcake-roll-foytong': 'คัพเค้กฝอยทอง.png',
+  'g50-cupcake-brownie':      'คัพเค้กฝอยทอง.png',
+  'g50-sandwich-roll':        'แซนวิชแฮมชีส.png',
+  'g50-sandwich-eclair':      'แซนวิชแฮมชีส.png',
+  'g50-sandwich-brownie':     'แซนวิชแฮมชีส.png',
+  'g50-toffee-brownie':       'ทอฟฟี่เค้ก.png',
+  'g50-sausage-roundbread':   'ปังไส้กรอก.png',
+  'g50-hamcheese-brownie':    'ขนมปังไส้กรอกแฮมชีส.png',
+  'g50-hamcheese-roll':       'ขนมปังไส้กรอกแฮมชีส.png',
+  'g50-hamcheese-eclair':     'ขนมปังไส้กรอกแฮมชีส.png',
+  'g50-porkchili-roll':       'ขนมปังหมูหยองพริกเผา.png',
+  'g50-porkchili-brownie':    'ขนมปังหมูหยองพริกเผา.png',
+  'g50-porkchili-eclair':     'ขนมปังหมูหยองพริกเผา.png',
+};
+
+// =====================
 // STATE
 // cart: { [cartKey]: { qty, juice, price, displayName } }
 // currentSelections: { [groupId]: { [selectorKey]: value } }
@@ -644,7 +709,7 @@ function renderGroupCard(group) {
     <div class="group-card ${groupTotal > 0 ? 'has-item' : ''}" id="card-${escapeHtml(group.groupId)}">
       <div class="card-img-wrap" style="background:linear-gradient(135deg,${group.gradient[0]},${group.gradient[1]})">
         ${groupTotal > 0 ? `<div class="group-badge">${groupTotal}</div>` : ''}
-        <img class="card-img" src="assets/products/${escapeHtml(group.groupId)}.jpg"
+        <img class="card-img" src="assets/products/${encodeURIComponent(GROUP_IMAGES[group.groupId] || (group.groupId + '.jpg'))}"
           onerror="this.style.display='none'" alt="${escapeHtml(group.name)}">
         <div class="card-icon-fallback">${group.icon}</div>
       </div>

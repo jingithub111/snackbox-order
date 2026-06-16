@@ -1,10 +1,11 @@
 'use strict';
 
 // =====================
-// BACKEND URL — Google Apps Script Web App URL
-// Deploy Code.gs as Web App → copy URL here
+// BACKEND — Google Apps Script Web App
+// Deploy Code.gs → copy Web App URL and shared secret here
 // =====================
 const BACKEND_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const SHARED_SECRET = 'YOUR_SHARED_SECRET_32_CHARS'; // must match CONFIG.SHARED_SECRET in Code.gs
 
 // =====================
 // MENU GROUPS
@@ -919,6 +920,7 @@ async function submitOrder() {
 
   try {
     const payload = buildOrderPayload();
+    payload.secret = SHARED_SECRET;
 
     if (state.slipFile) {
       payload.slipBase64 = await fileToBase64(state.slipFile);

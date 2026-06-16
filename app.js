@@ -2,10 +2,13 @@
 
 // =====================
 // BACKEND — Google Apps Script Web App
-// Deploy Code.gs → copy Web App URL and shared secret here
+// Deploy Code.gs → copy Web App URL here
 // =====================
 const BACKEND_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
-const SHARED_SECRET = 'YOUR_SHARED_SECRET_32_CHARS'; // must match CONFIG.SHARED_SECRET in Code.gs
+
+// reCAPTCHA v3 site key — public, safe to expose in source code
+// Secret key lives only in Code.gs (server-side)
+const RECAPTCHA_SITE_KEY = 'YOUR_RECAPTCHA_SITE_KEY';
 
 // =====================
 // MENU GROUPS
@@ -903,6 +906,15 @@ function buildOrderPayload() {
   };
 }
 
+function getRecaptchaToken() {
+  return new Promise((resolve) => {
+    if (typeof grecaptcha === 'undefined') { resolve(''); return; }
+    grecaptcha.ready(() => {
+      grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit_order' }).then(resolve);
+    });
+  });
+}
+
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -920,7 +932,7 @@ async function submitOrder() {
 
   try {
     const payload = buildOrderPayload();
-    payload.secret = SHARED_SECRET;
+    payload.recaptchaToken = await getRecaptchaToken();
 
     if (state.slipFile) {
       payload.slipBase64 = await fileToBase64(state.slipFile);
